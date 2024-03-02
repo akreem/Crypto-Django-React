@@ -1,1 +1,3 @@
 postgres-data/
+cryptoapi/migrations/
+myproject/__pycache__
