@@ -1,0 +1,92 @@
+{
+    "name": "Ethereum",
+    "symbol": "ETH"
+},
+{
+    "name": "Bitcoin",
+    "symbol": "BTC"
+},
+{
+    "name": "Solana",
+    "symbol": "SOL"
+},
+{
+    "name": "Ripple",
+    "symbol": "XRP"
+},
+{
+    "name": "Cardano",
+    "symbol": "ADA"
+},
+{
+    "name": "Dogecoin",
+    "symbol": "DOGE"
+},
+{
+    "name": "Filecoin",
+    "symbol": "FIL"
+},
+{
+    "name": "Optimism",
+    "symbol": "OP"
+},
+{
+    "name": "Kaspa",
+    "symbol": "KAS"
+},
+{
+    "name": "Injective",
+    "symbol": "INJ"
+},
+{
+    "name": "Render",
+    "symbol": "RNDR"
+},
+{
+    "name": "Celestia",
+    "symbol": "TIA"
+},
+{
+    "name": "Arbitrum",
+    "symbol": "ARB"
+},
+{
+    "name": "Sei",
+    "symbol": "SEI"
+},
+{
+    "name": "Sui",
+    "symbol": "SUI"
+},
+{
+    "name": "Pepe",
+    "symbol": "PEPE"
+},
+{
+    "name": "Fetch.ai",
+    "symbol": "FET"
+},
+{
+    "name": "Bonk",
+    "symbol": "BONK"
+},
+{
+    "name": "Gala",
+    "symbol": "GALA"
+},
+{
+    "name": "Sandbox",
+    "symbol": "SAND"
+},
+{
+    "name": "Fantom",
+    "symbol": "FTM"
+},
+{
+    "name": "dYdX",
+    "symbol": "DYDX"
+},
+{
+    "name": "Decentraland",
+    "symbol": "MANA"
+}
