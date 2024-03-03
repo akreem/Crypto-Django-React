@@ -1,70 +1,110 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
 from django.utils import timezone 
 from rest_framework import generics
 from rest_framework import status
+from rest_framework import serializers
 from rest_framework.response import Response
+from rest_framework.decorators import api_view
 from .models import Cryptocurrency, Trade
-from .serializers import CryptocurrencySerializer, CryptocurrencyUpdateSerializer, TradeSerialiser
+from .serializers import CryptocurrencySerializer,TradeSerialiser
 # Create your views here.
 
 def main(request):
     return HttpResponse("Crypto")
 
-class CryptocurrencyList(generics.ListCreateAPIView):
-    queryset = Cryptocurrency.objects.all()
-    serializer_class = CryptocurrencySerializer
+@api_view(['GET'])
+def ApiOverview(request):
+    api_urls = {
+        'all_coins': '/all/',
+        'Search by symbol': '/all/?symbol=symbol_name',
+        'Add': '/create',
+        'Update': '/symbol/update/',
+        'Delete': '/symbol/delete/'
+    }
+ 
+    return Response(api_urls)
 
-class CryptocurrencyUpdate(generics.RetrieveUpdateAPIView):
-    queryset = Cryptocurrency.objects.all()
-    serializer_class = CryptocurrencyUpdateSerializer
-    lookup_field = 'symbol'
-    def get(self, request, *args, **kwargs):
-        symbol = kwargs.get('symbol').upper()
-        try:
-            cryptocurrency = Cryptocurrency.objects.get(symbol=symbol)
-            serializer = self.get_serializer(cryptocurrency)
-            return Response(serializer.data)
-        except:
-            return Response({"error": f"Cryptocurrency with symbol '{symbol}' does not exist."}, status=status.HTTP_404_NOT_FOUND)
-    
-    def perform_update(self, serializer):
-        # Update the timestamp field before saving
-        serializer.validated_data['timestamp'] = timezone.now()
-        super().perform_update(serializer)
+@api_view(['POST'])
+def add_coins(request):
+    coin = CryptocurrencySerializer(data=request.data)
+ 
+    # validating for already existing data
+    if Cryptocurrency.objects.filter(**request.data).exists():
+        raise serializers.ValidationError('This data already exists')
+ 
+    if coin.is_valid():
+        coin.save()
+        return Response(coin.data)
+    else:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+ 
+@api_view(['GET'])
+def view_coins(request):
+    # checking for the parameters from the URL
+    if request.query_params:
+        coins = Cryptocurrency.objects.filter(**request.query_params.dict())
+    else:
+        coins = Cryptocurrency.objects.all()
+ 
+    # if there is something in items else raise error
+    if coins:
+        serializer = CryptocurrencySerializer(coins, many=True)
+        return Response(serializer.data)
+    else:
+        return Response(status=status.HTTP_404_NOT_FOUND)
 
-    def put(self, request, *args, **kwargs):
-        symbol = kwargs.get('symbol').upper()
-        try:
-            cryptocurrency = Cryptocurrency.objects.get(symbol=symbol)
-            serializer = self.get_serializer(cryptocurrency)
-        except Cryptocurrency.DoesNotExist:
-            return Response({"error": f"Cryptocurrency with symbol '{symbol}' does not exist."}, status=status.HTTP_404_NOT_FOUND)
-        serializer = self.get_serializer(cryptocurrency, data=request.data, partial=True)
-        try:
-            serializer.is_valid(raise_exception=True)
-        except serializer.ValidationError as e:
-            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-        self.perform_update(serializer)
-        updated_cryptocurrency = Cryptocurrency.objects.get(symbol=symbol)
-        updated_serializer = CryptocurrencySerializer(updated_cryptocurrency)
-        return Response(updated_serializer.data)
-  
+@api_view(['POST'])
+def update_coins(request, symbol):
+    coin = Cryptocurrency.objects.get(symbol=symbol)
+    data = CryptocurrencySerializer(instance=coin, data=request.data)
 
-class CryptocurrencyBySymbolView(generics.RetrieveAPIView):
-    queryset = Cryptocurrency.objects.all()
-    serializer_class = CryptocurrencySerializer
-    lookup_field = 'symbol'
+    if data.is_valid():
+        data.save()
+        return Response(data.data)
+    else:
+        return Response(status=status.HTTP_404_NOT_FOUND)
 
-    def get(self, request, *args, **kwargs):
-        symbol = kwargs.get('symbol').upper()
-        try:
-            cryptocurrency = Cryptocurrency.objects.get(symbol=symbol)
-            serializer = self.get_serializer(cryptocurrency)
-            return Response(serializer.data)
-        except Cryptocurrency.DoesNotExist:
-            return Response({"error": f"Cryptocurrency with symbol '{symbol}' does not exist."}, status=status.HTTP_404_NOT_FOUND)
+@api_view(['DELETE'])
+def delete_coins(request, symbol):
+    coin = get_object_or_404(Cryptocurrency, symbol=symbol)
+    coin.delete()
+    return Response(status=status.HTTP_202_ACCEPTED)
 
-class TradeList(generics.ListCreateAPIView):
-    queryset = Trade.objects.all()
-    serializer_class = TradeSerialiser
+@api_view(['POST'])
+def create_trade(request):
+    trade = TradeSerialiser(data=request.data)
+    if trade.is_valid():
+        trade.save()
+        return Response(trade.data)
+    else:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+@api_view(['GET'])
+def view_trades(request):
+    if request.query_params:
+        trades = Trade.objects.filter(**request.query_params.dict())
+    else:
+        trades = Trade.objects.all()
+    if trades:
+        serializer = TradeSerialiser(trades, many=True)
+        return Response(serializer.data)
+    else:
+        return Response(status=status.HTTP_404_NOT_FOUND)     
+
+@api_view(['POST'])
+def update_trades(request, pk):
+    trade = Trade.objects.get(pk=pk)
+    data = TradeSerialiser(instance=trade, data=request.data)
+
+    if data.is_valid():
+        data.save()
+        return Response(data.data)
+    else:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+@api_view(['DELETE'])
+def delete_trade(request, pk):
+    trade = get_object_or_404(Trade, pk=pk)
+    trade.delete()
+    return Response(status=status.HTTP_202_ACCEPTED)

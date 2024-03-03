@@ -3,12 +3,19 @@ services:
   web:
     build: .
     command: python manage.py runserver 0.0.0.0:8000
+    hostname: django
     volumes:
       - .:/app
     ports:
       - "8002:8000"
     depends_on:
-      - db    
+      - db
+
+  frontend:
+    build: ./frontapp
+    ports:
+      - 8091:80
+
   db:
     image: postgres:latest
     environment:

@@ -1,10 +1,15 @@
 from django.urls import path
-from .views import main, CryptocurrencyList, CryptocurrencyUpdate, CryptocurrencyBySymbolView, TradeList
+from . import views
+
 
 urlpatterns = [
-    path('', main),
-    path('coins/', CryptocurrencyList.as_view(), name='cryptocurrency-list'),
-    path('coins/<str:symbol>/update/', CryptocurrencyUpdate.as_view(), name='cryptocurrency-update'),
-    path('coins/<str:symbol>/', CryptocurrencyBySymbolView.as_view(), name='cryptocurrency-selectOne'),
-    path('trades/', TradeList.as_view(), name='trade-list'),
+    path('coins/', views.ApiOverview, name='home'),
+    path('coins/create/', views.add_coins, name='add-coins'),
+    path('coins/all/', views.view_coins, name='view-coins'),
+    path('coins/<str:symbol>/update/', views.update_coins, name='update-coins'),
+    path('coins/<str:symbol>/delete/', views.delete_coins, name='delete-coins'),
+    path('trades/create/', views.create_trade, name='create-trade'),
+    path('trades/all/', views.view_trades, name='view-trades'),
+    path('trades/<int:pk>/update/', views.update_trades, name='update-trades'),
+    path('trades/<int:pk>/delete/', views.delete_trade, name='delete-trades'),
 ]
