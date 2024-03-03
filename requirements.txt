@@ -3,3 +3,4 @@ cx_Oracle;
 djangorestframework;
 flask;
 psycopg2-binary;
+django-cors-headers;

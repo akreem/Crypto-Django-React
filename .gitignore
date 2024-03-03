@@ -2,3 +2,4 @@ postgres-data/
 cryptoapi/migrations/
 myproject/__pycache__/
 frontapp/node_modules/
+frontend/

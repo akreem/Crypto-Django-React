@@ -11,6 +11,7 @@ class CryptocurrencyUpdateSerializer(serializers.ModelSerializer):
         fields = ['name', 'symbol', 'timestamp']
 
 class TradeSerialiser(serializers.ModelSerializer):
+    coin = CryptocurrencySerializer()
     class Meta:
         model = Trade
-        fields = '__all__'
+        fields = ['id', 'user', 'direction','timestamp','price','coin','status']

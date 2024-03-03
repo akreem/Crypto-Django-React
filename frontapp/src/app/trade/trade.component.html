@@ -1,0 +1,28 @@
+<table class="table-auto">
+    <thead>
+      <tr>
+        <th>Id</th>
+        <th>User</th>
+        <th>Direction</th>
+        <th>Coin</th>
+        <th>Price</th>
+        <th>Status</th>
+
+      </tr>
+    </thead>
+    <tbody>
+        @for(trade of trades; track trade.id){
+            <tr class="border-b dark:border-neutral-500">
+                <td class="whitespace-nowrap px-6 py-4 font-medium">{{   trade.id   }}</td>
+                <td class="whitespace-nowrap px-6 py-4 font-medium">{{   trade.user   }}</td>
+                <td class="whitespace-nowrap px-6 py-4 font-medium">{{   trade.direction   }}</td>
+                <td class="whitespace-nowrap px-6 py-4 font-medium">{{   trade.coin.symbol   }}</td>
+                <td class="whitespace-nowrap px-6 py-4 font-medium">{{   trade.price   }}</td>
+                <td class="whitespace-nowrap px-6 py-4 font-medium">{{   trade.status   }}</td>
+            </tr>
+        }
+        @empty {
+            <h3 class="text-green-500">No Trades</h3>
+        }
+    </tbody>
+</table>
