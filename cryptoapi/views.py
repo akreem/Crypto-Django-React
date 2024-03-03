@@ -22,7 +22,6 @@ def ApiOverview(request):
         'Update': '/symbol/update/',
         'Delete': '/symbol/delete/'
     }
- 
     return Response(api_urls)
 
 @api_view(['POST'])
@@ -50,13 +49,13 @@ def view_coins(request):
     # if there is something in items else raise error
     if coins:
         serializer = CryptocurrencySerializer(coins, many=True)
-        return Response(serializer.data)
+        return Response({"coins":serializer.data})
     else:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
 @api_view(['POST'])
-def update_coins(request, symbol):
-    coin = Cryptocurrency.objects.get(symbol=symbol)
+def update_coins(request, pk):
+    coin = Cryptocurrency.objects.get(pk=pk)
     data = CryptocurrencySerializer(instance=coin, data=request.data)
 
     if data.is_valid():
@@ -66,8 +65,8 @@ def update_coins(request, symbol):
         return Response(status=status.HTTP_404_NOT_FOUND)
 
 @api_view(['DELETE'])
-def delete_coins(request, symbol):
-    coin = get_object_or_404(Cryptocurrency, symbol=symbol)
+def delete_coins(request, pk):
+    coin = get_object_or_404(Cryptocurrency, pk=pk)
     coin.delete()
     return Response(status=status.HTTP_202_ACCEPTED)
 

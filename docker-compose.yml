@@ -15,6 +15,14 @@ services:
     ports:
       - 8091:80
 
+  react:
+    build: ./frontend
+    command: npm run dev -- --host
+    ports:
+      - 5000:5173
+    depends_on:
+      - web  
+
   db:
     image: postgres:latest
     environment:
